@@ -31,14 +31,15 @@
 	<script type="text/javascript" src="js/angular.min.js"></script>
 	<script type="text/javascript">
 		angular.module('Curso', []).run(function($rootScope){
-            $rootScope.titulo ='Aula 7'
+            $rootScope.titulo ='Aula 9'
             $rootScope.nome = 'weliton'
         })
         
         
-        .controller('PainelControler', function($rootScope, $http){
+        .controller('PainelControler', function($rootScope, $scope, $http){
             var ctrl = this;
             ctrl.titulo ='Painel'
+            ctrl.pessoaSelecionada = null;
 
             ctrl.mudarTitulo = function(sNome)
             {   
@@ -49,19 +50,26 @@
                      ctrl.titulo = Math.round(Math.random() *10000,0);
                     }
             }
+            $scope.$on('PessoaSelecionada', function(event, oEvento){
+                ctrl.pessoaSelecionada = oEvento;
+                console.log(oEvento);
+        })
             
         })   
-        .controller('ListaControler', function($rootScope, $http){
+        .controller('ListaControler', function($rootScope, $scope, $http){
             var ctrl = this;
-            ctrl.titulo ='Painel'
+            ctrl.titulo ='Lista'
 
-            ctrl.listaNome = ['Well', 'Leticia' , 'Teh'];
-           ctrl.mudarTitulo = function(sNome)
-           {
-                ctrl.titulo = sNome;
-           }
-		
+            ctrl.listaPessoa = [
+                {nome: 'Weliton', idade: 23, email: 'weliton@gamil.com'},
+                {nome: 'teh teh', idade: 20, email: 'teh@gamil.com'},
+                {nome: 'leticia', idade: 16, email: 'leticia@gamil.com'}
 
+
+            ];
+            ctrl.pessoaSelecionada = function(oPessoa){
+                $rootScope.$broadcast('PessoaSelecionada', oPessoa);
+            }
 		});
 
 	</script>
@@ -73,31 +81,22 @@
 				
 				</div>
 
-				<div class="panel panel-default" ng-controller="PainelControler as pc1"> 
+               <div class="panel panel-default" ng-controller="ListaControler as lc">
 
-				  <div class="panel-heading">{{ pc1.titulo }}
-				  <div class="panel-body">
-                        <button class="btn btn-primary" ng-click="pc1.mudarTitulo();">Novo titulo</button>
-                 </div>
-                  </div>
-                  <div class="panel panel-default" ng-controller="ListaControler as lc1">
-
-                    <div class="panel-heading">{{ lc1.titulo }}</div>
+                    <div class="panel-heading">{{ lc.titulo }}</div>
                     <div class="panel-body">
                         <ul>
-                            <li ng-repeat="nome in lc1.listaNome" ng-click="lc1.mudarTitulo(lc1.nome);">{{nome}}</li>
+                            <li ng-repeat="pessoa in lc.listaPessoa" ng-click="lc.pessoaSelecionada(pessoa);">{{ pessoa.nome }}</li>
                         </ul>
 
                     </div>
-                 </div>
+                    </div>
+                 
+                <div class="panel panel-default" ng-controller="PainelControler as pc">
 
-                </div>
-                
-                <div class="panel panel-default" ng-controller="PainelControler as pc2">
-
-                    <div class="panel-heading">{{ pc2.titulo }}</div>
+                    <div class="panel-heading">{{ pc.titulo }}</div>
                     <div class="panel-body">
-                        <button class="btn btn-primary" ng-click="pc2.mudarTitulo();">Novo titulo</button>
+                        {{pc.pessoaSelecionada.nome}}
                     </div>
                   </div>
 
